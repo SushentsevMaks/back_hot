@@ -5,10 +5,9 @@ import uvicorn
 app = FastAPI(docs_url=None)
 
 hotels = [
-    {"id": 1, "title": "Sochi"},
-    {"id": 2, "title": "Дубай"},
+    {"id": 1, "title": "Sochi", "name": "sochi"},
+    {"id": 2, "title": "Дубай", "name": "dubai"},
 ]
-
 
 @app.get("/hotels")
 def get_hotels(
@@ -42,6 +41,36 @@ def delete_hotel(hotel_id: int):
     global hotels
     hotels = [hotel for hotel in hotels if hotel["id"] != hotel_id]
     return {"status": "OK"}
+
+@app.put("/hotels/{hotel_id}")
+def put_hotel(hotel_id: int, hotel_title: str, hotel_name: str):
+    global hotels
+
+    for hotel in hotels:
+        if hotel["id"] == hotel_id:
+            hotel["title"] = hotel_title
+            hotel["name"] = hotel_name
+
+            return {"status": "OK"}
+
+    if hotel_id > len(hotels):
+        return {"status": "ERROR"}
+
+@app.patch("/hotels/{hotel_id}")
+def patch_hotel(hotel_id: int, hotel_title: str | None, hotel_name: str | None):
+    global hotels
+
+    for hotel in hotels:
+        if hotel["id"] == hotel_id:
+            if hotel_title:
+                hotel["title"] = hotel_title
+            if hotel_name:
+                hotel["name"] = hotel_name
+
+            return {"status": "OK"}
+
+    if hotel_id > len(hotels):
+        return {"status": "ERROR"}
 
 
 @app.get("/docs", include_in_schema=False)
