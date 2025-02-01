@@ -17,6 +17,6 @@ class BaseRepository:
         return result.scalars().one_or_none()
 
     async def add(self, *args, **kwargs):
-        query = insert(self.model).values(**hotel_data.model_dump())
+        query = insert(self.model).values(args)
         result = await self.session.execute(query)
-        return result.scalars().one_or_none()
+        return result.scalars().first()

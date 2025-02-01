@@ -42,12 +42,10 @@ async def create_hotel(hotel_data: Hotel = Body(openapi_examples={
         }
     }
 })):
-
     async with async_session_maker() as session:
-        add_hotel_stmt = insert(HotelsOrm).values(**hotel_data.model_dump())
+        hotel = await HotelsRepository(session).add(title=hotel_data.title, location=hotel_data.location)
         """Дебаг sql запроса"""
-        #print(add_hotel_stmt.compile(engine, compile_kwargs={"literal_binds": True}))
-        await session.execute(add_hotel_stmt)
+        #print(hotel.compile(engine, compile_kwargs={"literal_binds": True}))
         await session.commit()
 
     return {"status": "OK", "data": hotel}
