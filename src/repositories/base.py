@@ -1,5 +1,6 @@
+from fastapi import HTTPException
 from pydantic import BaseModel
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, update, delete
 
 
 class BaseRepository:
@@ -21,3 +22,29 @@ class BaseRepository:
         add_data_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
         result = await self.session.execute(add_data_stmt)
         return result.scalars().first()
+
+    async def edit(self, data: BaseModel, hotel_id) -> None:
+        existing_item = await self.session.get(self.model, hotel_id)
+        if not existing_item:
+            raise HTTPException(status_code=404, detail="Record not found")
+
+        update_data_stmt = (
+            update(self.model)
+            .where(self.model.id == hotel_id)
+            .values(**data.model_dump(exclude_unset=True))
+        )
+
+        result = await self.session.execute(update_data_stmt)
+
+    async def delete(self, hotel_id) -> None:
+        existing_item = await self.session.get(self.model, hotel_id)
+        if not existing_item:
+            raise HTTPException(status_code=404, detail="Record not found")
+
+        delete_data_stmt = (
+            delete(self.model)
+            .where(self.model.id == hotel_id)
+        )
+
+        result = await self.session.execute(delete_data_stmt)
+
