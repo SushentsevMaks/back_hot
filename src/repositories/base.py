@@ -23,28 +23,32 @@ class BaseRepository:
         result = await self.session.execute(add_data_stmt)
         return result.scalars().first()
 
-    async def edit(self, data: BaseModel, hotel_id) -> None:
-        existing_item = await self.session.get(self.model, hotel_id)
-        if not existing_item:
+    async def edit(self, data: BaseModel, exclude_unset=False, **filter_by) -> None:
+        existing_item = await self.session.execute(
+            select(self.model).filter_by(**filter_by)
+        )
+        if not existing_item.scalar_one_or_none():
             raise HTTPException(status_code=404, detail="Record not found")
 
         update_data_stmt = (
             update(self.model)
-            .where(self.model.id == hotel_id)
-            .values(**data.model_dump(exclude_unset=True))
+            .filter_by(**filter_by)
+            .values(**data.model_dump(exclude_unset=exclude_unset))
         )
 
-        result = await self.session.execute(update_data_stmt)
+        await self.session.execute(update_data_stmt)
 
-    async def delete(self, hotel_id) -> None:
-        existing_item = await self.session.get(self.model, hotel_id)
-        if not existing_item:
+    async def delete(self, **filter_by) -> None:
+        existing_item = await self.session.execute(
+            select(self.model).filter_by(**filter_by)
+        )
+        if not existing_item.scalar_one_or_none():
             raise HTTPException(status_code=404, detail="Record not found")
 
         delete_data_stmt = (
             delete(self.model)
-            .where(self.model.id == hotel_id)
+            .filter_by(**filter_by)
         )
 
-        result = await self.session.execute(delete_data_stmt)
+        await self.session.execute(delete_data_stmt)
 
