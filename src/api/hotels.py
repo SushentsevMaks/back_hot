@@ -4,8 +4,7 @@ from back_hot.src.api.dependencies import PaginationDep
 from back_hot.src.database import async_session_maker, engine
 
 from back_hot.src.repositories.hotels import HotelsRepository
-from back_hot.src.schemas.hotels_class import Hotel, HotelPATCH
-
+from back_hot.src.schemas.hotels_class import HotelPATCH, HotelAdd
 
 router_hotels = APIRouter(prefix="/hotels", tags=["Отели"])
 
@@ -30,7 +29,7 @@ async def get_hotel(hotel_id: int):
         return await HotelsRepository(session).get_one_or_none(id=hotel_id)
 
 @router_hotels.post("", summary="Добавления отеля в базу")
-async def create_hotel(hotel_data: Hotel = Body(openapi_examples={
+async def create_hotel(hotel_data: HotelAdd = Body(openapi_examples={
     "1": {
     "summary": "Сочи",
     "value": {
@@ -62,7 +61,7 @@ async def delete_hotel(hotel_id: int):
     return {"status": "OK"}
 
 @router_hotels.put("/{hotel_id}", summary="Полное изменение данных отеля в базе")
-async def put_hotel(hotel_id: int, hotel_data: Hotel):
+async def put_hotel(hotel_id: int, hotel_data: HotelAdd):
     async with async_session_maker() as session:
         hotel = await HotelsRepository(session).edit(hotel_data, id=hotel_id)
         await session.commit()
