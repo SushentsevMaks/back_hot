@@ -29,7 +29,7 @@ class BaseRepository:
         add_data_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
         result = await self.session.execute(add_data_stmt)
         item = result.scalars().first()
-        return self.schema.model_validate(item)
+        return self.schema.model_validate(item, from_attributes=True)
 
     async def edit(self, data: BaseModel, exclude_unset=False, **filter_by) -> None:
         existing_item = await self.session.execute(
