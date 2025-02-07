@@ -41,19 +41,18 @@ async def register_user(
 
     return {"status": "OK"}
 
-@router.get("/logout", summary="Выход из системы")
+@router.post("/logout", summary="Выход из системы")
 async def only_auth(
         response: Response
 ):
     response.delete_cookie("access_token")
-    return {"status": "OK"}
-
+    return {"status": "OK",
+            "message": "Вы успешно вышли из системы"}
 
 @router.get("/only_auth", summary="Кто мы?")
 async def only_auth(
         user_id: UserIdDep
 ):
-
     async with async_session_maker() as session:
         user = await UsersRepository(session).get_one_or_none(id=user_id)
         if user is None:

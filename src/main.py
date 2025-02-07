@@ -9,6 +9,7 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from back_hot.src.api.hotels import router_hotels
 from back_hot.src.api.auth import router as router_auth
+from back_hot.src.api.rooms import router as router_rooms
 
 
 
@@ -16,6 +17,7 @@ app = FastAPI(docs_url=None)
 
 app.include_router(router_auth)
 app.include_router(router_hotels)
+app.include_router(router_rooms)
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
