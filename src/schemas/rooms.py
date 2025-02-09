@@ -4,8 +4,8 @@ class RoomsAdd(BaseModel):
     hotel_id: int
     title: str
     description: str
-    price: float
-    quantity: bool
+    price: int
+    quantity: int
 
 class Rooms(RoomsAdd):
     id: int
