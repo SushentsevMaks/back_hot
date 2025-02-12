@@ -1,7 +1,7 @@
 from typing import Annotated
-from fastapi import Depends, Query, Request, HTTPException
+from fastapi import Depends, Query, Request, HTTPException, status
 from pydantic import BaseModel
-
+from jwt import ExpiredSignatureError
 from back_hot.src.database import async_session_maker
 from back_hot.src.services.services import AuthService
 from back_hot.src.utils.db_manager import DBManager
@@ -22,8 +22,20 @@ def get_token(request: Request) -> str:
 
 
 def get_current_user_id(token: str = Depends(get_token)) -> int:
-    data = AuthService().encode_token(token)
-    return data["user_id"]
+    try:
+        data = AuthService().encode_token(token)
+        return data["user_id"]
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired, please refresh your token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid token",
+        )
 
 
 UserIdDep = Annotated[int, Depends(get_current_user_id)]

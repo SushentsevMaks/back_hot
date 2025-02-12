@@ -1,4 +1,4 @@
-from sqlalchemy import select, func, insert
+from sqlalchemy import select, func
 
 from back_hot.src.models.hotels import HotelsOrm
 from back_hot.src.repositories.base import BaseRepository
