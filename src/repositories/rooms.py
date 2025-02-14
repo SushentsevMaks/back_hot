@@ -1,6 +1,5 @@
 from datetime import date
 
-from back_hot.src.models.bookings import BookingsOrm
 from back_hot.src.models.rooms import RoomsOrm
 from back_hot.src.repositories.base import BaseRepository
 from back_hot.src.repositories.utils import rooms_ids_for_booking
