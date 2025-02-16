@@ -34,6 +34,10 @@ class BaseRepository:
         item = result.scalars().first()
         return self.schema.model_validate(item, from_attributes=True)
 
+    async def add_bulk(self, data: list[BaseModel]) -> None:
+        add_data_stmt = insert(self.model).values([item.model_dump() for item in data])
+        await self.session.execute(add_data_stmt)
+
     async def edit(self, data: BaseModel, exclude_unset=False, **filter_by) -> None:
         existing_item = await self.session.execute(
             select(self.model).filter_by(**filter_by)
