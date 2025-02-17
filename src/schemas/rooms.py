@@ -1,11 +1,13 @@
 from pydantic import BaseModel, Field
 
+
 class RoomsAddRequest(BaseModel):
     title: str
     description: str | None = None
     price: int
     quantity: int
-    facilities_ids: list[int] | None = None
+    facilities_ids: list[int] = []
+
 
 class RoomsAdd(BaseModel):
     hotel_id: int
@@ -13,6 +15,7 @@ class RoomsAdd(BaseModel):
     description: str
     price: int
     quantity: int
+
 
 class Rooms(RoomsAdd):
     id: int
@@ -22,6 +25,8 @@ class RoomsPatchRequest(BaseModel):
     description: str | None = Field(None)
     price: int | None = Field(None)
     quantity: int | None = Field(None)
+    facilities_ids: list[int] = []
+
 
 class RoomsPatch(BaseModel):
     hotel_id: int | None = Field(None)
