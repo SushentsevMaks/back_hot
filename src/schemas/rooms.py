@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
 
+from back_hot.src.schemas.facilities import Facilities
+
 
 class RoomsAddRequest(BaseModel):
     title: str
@@ -19,6 +21,11 @@ class RoomsAdd(BaseModel):
 
 class Rooms(RoomsAdd):
     id: int
+
+
+class RoomWithRels(Rooms):
+    facilities: list[Facilities]
+
 
 class RoomsPatchRequest(BaseModel):
     title: str | None = Field(None)
