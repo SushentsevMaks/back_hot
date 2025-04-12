@@ -5,12 +5,13 @@ from sqlalchemy import update, select, delete, insert
 
 from back_hot.src.models.facilities import FacilitiesOrm, RoomsFacilitiesOrm
 from back_hot.src.repositories.base import BaseRepository
+from back_hot.src.repositories.mappers.mappers import FacilityDataMapper
 from back_hot.src.schemas.facilities import Facilities, RoomFacilities
 
 
 class FacilitiesRepository(BaseRepository):
     model = FacilitiesOrm
-    schema = Facilities
+    mapper = FacilityDataMapper
 
 
 class RoomsFacilitiesRepository(BaseRepository):

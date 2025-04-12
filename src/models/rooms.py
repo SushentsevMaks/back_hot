@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import ForeignKey
 from back_hot.src.database import Base
 
 class RoomsOrm(Base):
