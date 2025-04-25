@@ -1,17 +1,19 @@
+import json
+from fastapi_cache.decorator import cache
 from fastapi import APIRouter
-from fastapi import APIRouter, Body, Query
 from back_hot.src.api.dependencies import DBDep
+from back_hot.src.init import redis_manager
 from back_hot.src.schemas.facilities import FacilitiesAdd
 
-from back_hot.src.schemas.rooms import RoomsAdd, RoomsAddRequest
 
 
 router = APIRouter(prefix="/facilities", tags=["Удобства"])
 
 @router.get("", summary="Получение всех удобств отеля")
+@cache(expire=10)
 async def get_facilities(db: DBDep):
-    check_hotel = await db.facilities.get_all()
-    return check_hotel
+    return await db.facilities.get_all()
+
 
 
 @router.post("", summary="Добавление нового удобства")

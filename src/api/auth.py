@@ -1,8 +1,6 @@
 from fastapi import APIRouter, HTTPException, Response
-
+from fastapi_cache.decorator import cache
 from back_hot.src.api.dependencies import UserIdDep, DBDep
-from back_hot.src.database import async_session_maker
-from back_hot.src.repositories.users import UsersRepository
 from back_hot.src.schemas.users import UserRequestAdd, UserAdd
 from back_hot.src.services.services import AuthService
 
@@ -10,6 +8,7 @@ router = APIRouter(prefix="/auth", tags=["Авторизация и аутент
 
 
 @router.post("/login", summary="Логин юзера")
+@cache(expire=300)
 async def login_user(data: UserRequestAdd, response: Response, db: DBDep):
     user = await db.users.get_user_with_hashed_password(email=data.email)
 
@@ -36,6 +35,7 @@ async def only_auth(response: Response):
     return {"status": "OK", "message": "Вы успешно вышли из системы"}
 
 @router.get("/only_auth", summary="Кто мы?")
+@cache(expire=60)
 async def only_auth(user_id: UserIdDep, db: DBDep):
     user = await db.users.get_one_or_none(id=user_id)
     if user is None:

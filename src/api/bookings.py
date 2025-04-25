@@ -1,4 +1,4 @@
-
+from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Body, HTTPException
 from back_hot.src.api.dependencies import DBDep, UserIdDep, PaginationDep
 from back_hot.src.schemas.bookings import BookingsAdd, Bookings, BookingsAddRequest
@@ -7,6 +7,7 @@ router = APIRouter(prefix="/bookings", tags=["Бронирование"])
 
 
 @router.get("", summary="Получение всех бронирований")
+@cache(expire=10)
 async def get_bookings(
         pagination: PaginationDep,
         db: DBDep
@@ -20,6 +21,7 @@ async def get_bookings(
 
 
 @router.get("/me", summary="Получение всех бронирований конкретного пользователя")
+@cache(expire=10)
 async def get_bookings_me(user_id: UserIdDep, db: DBDep):
     return await db.bookings.get_filtered(user_id=user_id)
 
