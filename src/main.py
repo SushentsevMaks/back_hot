@@ -1,3 +1,6 @@
+import eventlet
+eventlet.monkey_patch()
+
 from fastapi import FastAPI
 import uvicorn
 from fastapi.openapi.docs import get_swagger_ui_html
