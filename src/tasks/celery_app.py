@@ -1,6 +1,3 @@
-import eventlet
-eventlet.monkey_patch()
-
 from celery import Celery
 from back_hot.src.config import settings
 
